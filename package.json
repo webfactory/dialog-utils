@@ -1,0 +1,11 @@
+{
+  "name": "@webfactoryde/dialog-utils",
+  "version": "0.1.0",
+  "description": "Web Component with progressive enhancements for the HTML <dialog> element",
+  "main": "src/dialog-utils.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webfactory/dialog-utils.git"
+  },
+  "homepage": "https://github.com/webfactory/dialog-utils#readme"
+}
