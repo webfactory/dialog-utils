@@ -1,4 +1,4 @@
-# <dialog-utils>
+# &lt;dialog-utils&gt;
 
 Web Component with progressive enhancements for the HTML &lt;dialog&gt; element
 
