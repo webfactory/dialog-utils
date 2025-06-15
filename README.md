@@ -57,7 +57,7 @@ The component is exported to allow subclassing and extending its methods.
 import {DialogUtils} from '@webfactoryde/dialog-utils';
 
 class MyCustomDialogUtils extends DialogUtils {
-    onShow(e) {
+    onShow(event) {
         // call the parent method
         super.onShow?.(event);
 
