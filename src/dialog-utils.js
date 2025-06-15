@@ -1,4 +1,4 @@
-class DialogUtils extends HTMLElement {
+export class DialogUtils extends HTMLElement {
     static get observedAttributes() {
         return ["autofocus-target", "autoopen"];
     }
