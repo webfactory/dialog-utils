@@ -30,6 +30,8 @@ class DialogUtils extends HTMLElement {
         this.dialog = this.querySelector('dialog');
         this.dialog.addEventListener('close', this.onClose.bind(this));
 
+        this.polyfillShow();
+        this.polyfillShowModal();
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();
         this.handleAutofocus();
@@ -42,6 +44,41 @@ class DialogUtils extends HTMLElement {
     onClose() {
         this.resetIframes();
     }
+
+    /**
+     * Patch showModal() to emit a show event
+     */
+    polyfillShowModal() {
+        const origShowModal = this.dialog.showModal.bind(this.dialog);
+        this.dialog.showModal = (...args) => {
+            const result = origShowModal(...args);
+            this.dialog.dispatchEvent(new CustomEvent('show', {
+                detail: {
+                    isModal: true,
+                },
+                bubbles: true,
+            }));
+            return result;
+        };
+    }
+
+    /**
+     * Patch show() to emit a show event
+     */
+    polyfillShow() {
+        const origShow = this.dialog.show.bind(this.dialog);
+        this.dialog.show = (...args) => {
+            const result = origShow(...args);
+            this.dialog.dispatchEvent(new CustomEvent('show', {
+                detail: {
+                    isModal: false,
+                },
+                bubbles: true,
+            }));
+            return result;
+        };
+    }
+
 
     /**
      * Polyfill for light dismissal via closedby="any"
