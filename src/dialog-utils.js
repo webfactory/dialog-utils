@@ -28,7 +28,6 @@ class DialogUtils extends HTMLElement {
         }
 
         this.dialog = this.querySelector('dialog');
-        this.dialog.addEventListener('close', this.onClose.bind(this));
 
         this.polyfillShow();
         this.polyfillShowModal();
@@ -37,12 +36,22 @@ class DialogUtils extends HTMLElement {
         this.handleAutofocus();
         this.handleAutoopen();
 
+        this.dialog.addEventListener('show', this.onShow.bind(this));
+        this.dialog.addEventListener('close', this.onClose.bind(this));
+
         this.initialized = true;
         if (this._observer) this._observer.disconnect();
     }
 
+    onShow(e) {
+        if (e.detail.isModal) {
+            this.disablePageScroll();
+        }
+    }
+
     onClose() {
         this.resetIframes();
+        this.enablePageScroll();
     }
 
     /**
@@ -157,6 +166,19 @@ class DialogUtils extends HTMLElement {
         if (openImmediately) {
             this.dialog.showModal();
         }
+    }
+
+    enablePageScroll() {
+        if (this.origBodyOverflow) {
+            document.body.style.overflow = this.origBodyOverflow;
+            this.origBodyOverflow = null;
+        }
+    }
+
+    disablePageScroll() {
+        this.origBodyOverflow = document.body.style.overflow;
+
+        document.body.style.overflow = 'hidden';
     }
 
     /**
