@@ -29,15 +29,15 @@ class DialogUtils extends HTMLElement {
 
         this.dialog = this.querySelector('dialog');
 
+        this.dialog.addEventListener('show', this.onShow.bind(this));
+        this.dialog.addEventListener('close', this.onClose.bind(this));
+
         this.polyfillShow();
         this.polyfillShowModal();
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();
         this.handleAutofocus();
         this.handleAutoopen();
-
-        this.dialog.addEventListener('show', this.onShow.bind(this));
-        this.dialog.addEventListener('close', this.onClose.bind(this));
 
         this.initialized = true;
         if (this._observer) this._observer.disconnect();
