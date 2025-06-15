@@ -44,7 +44,7 @@ The enhancements are:
 
 <dl>
     <dt><code>show</code></dt>
-    <dd>The component monkey-patches the <code>show()</code> and <code>showModal()</code> methods to emit a <code>show</code> event that includes information about whether the dialog is displayed as a modal via <code>(bool) event.detail.isModal</code>.</dd>
+    <dd>The component monkey patches the <code>show()</code> and <code>showModal()</code> methods to emit a <code>show</code> event that includes information about whether the dialog is displayed as a modal via <code>(bool) event.detail.isModal</code>.</dd>
 </dl>
 
 ### Extending the component

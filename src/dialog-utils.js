@@ -32,8 +32,8 @@ export class DialogUtils extends HTMLElement {
         this.dialog.addEventListener('show', this.onShow.bind(this));
         this.dialog.addEventListener('close', this.onClose.bind(this));
 
-        this.polyfillShow();
-        this.polyfillShowModal();
+        this.monkeyPatchShowMethod();
+        this.monkeyPatchShowModalMethod();
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();
         this.handleAutofocus();
@@ -55,9 +55,9 @@ export class DialogUtils extends HTMLElement {
     }
 
     /**
-     * Patch showModal() to emit a show event
+     * Patch showModal() to emit a 'show' event, indicate that the dialog is modal
      */
-    polyfillShowModal() {
+    monkeyPatchShowModalMethod() {
         const origShowModal = this.dialog.showModal.bind(this.dialog);
         this.dialog.showModal = (...args) => {
             const result = origShowModal(...args);
@@ -72,9 +72,9 @@ export class DialogUtils extends HTMLElement {
     }
 
     /**
-     * Patch show() to emit a show event
+     * Patch show() to emit a 'show' event, indicate that the dialog is non-modal
      */
-    polyfillShow() {
+    monkeyPatchShowMethod() {
         const origShow = this.dialog.show.bind(this.dialog);
         this.dialog.show = (...args) => {
             const result = origShow(...args);
