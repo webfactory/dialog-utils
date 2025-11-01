@@ -44,10 +44,10 @@ The enhancements are:
 
 ### Events
 
-<dl>
-    <dt><code>show</code></dt>
-    <dd>The component monkey patches the <code>show()</code> and <code>showModal()</code> methods to emit a <code>show</code> event that includes information about whether the dialog is displayed as a modal via <code>(bool) event.detail.isModal</code>.</dd>
-</dl>
+#### `show`
+The component emits a `show` event on the `<dialog>` element that includes information about whether the dialog is displayed as a modal via `(bool) event.detail.isModal`.
+
+Caveat: This requires support for the `toggle` event which is [Baseline 2023](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent#browser_compatibility) but with a [known regression for dialog in Safari 18](https://bugs.webkit.org/show_bug.cgi?id=287055) (fixed in Safari 26).
 
 ### Extending the component
 
