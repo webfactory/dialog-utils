@@ -28,12 +28,11 @@ export class DialogUtils extends HTMLElement {
         }
 
         this.dialog = this.querySelector('dialog');
+        this.dialog.id = this.dialog.id ?? this.generateUniqueId();
 
-        this.dialog.addEventListener('show', this.onShow.bind(this));
+        this.dialog.addEventListener('toggle', this.onToggle.bind(this));
         this.dialog.addEventListener('close', this.onClose.bind(this));
 
-        this.monkeyPatchShowMethod();
-        this.monkeyPatchShowModalMethod();
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();
         this.handleAutofocus();
@@ -43,9 +42,23 @@ export class DialogUtils extends HTMLElement {
         if (this._observer) this._observer.disconnect();
     }
 
-    onShow(e) {
-        if (e.detail.isModal) {
+    onToggle(e) {
+        if (e.newState === 'open') {
+            this.onShow();
+        }
+    }
+
+    onShow() {
+        let isModal = document.querySelector(`#${this.dialog.id}:modal`) !== null;
+
+        if (isModal) {
             this.disablePageScroll();
+            this.dialog.dispatchEvent(new CustomEvent('show', {
+                detail: {
+                    isModal: isModal,
+                },
+                bubbles: true,
+            }));
         }
     }
 
@@ -54,40 +67,13 @@ export class DialogUtils extends HTMLElement {
         this.enablePageScroll();
     }
 
-    /**
-     * Patch showModal() to emit a 'show' event, indicate that the dialog is modal
-     */
-    monkeyPatchShowModalMethod() {
-        const origShowModal = this.dialog.showModal.bind(this.dialog);
-        this.dialog.showModal = (...args) => {
-            const result = origShowModal(...args);
-            this.dialog.dispatchEvent(new CustomEvent('show', {
-                detail: {
-                    isModal: true,
-                },
-                bubbles: true,
-            }));
-            return result;
-        };
-    }
+    generateUniqueId() {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            return crypto.randomUUID();
+        }
 
-    /**
-     * Patch show() to emit a 'show' event, indicate that the dialog is non-modal
-     */
-    monkeyPatchShowMethod() {
-        const origShow = this.dialog.show.bind(this.dialog);
-        this.dialog.show = (...args) => {
-            const result = origShow(...args);
-            this.dialog.dispatchEvent(new CustomEvent('show', {
-                detail: {
-                    isModal: false,
-                },
-                bubbles: true,
-            }));
-            return result;
-        };
+        return Date.now() + '-' + Math.random().toString(36).substring(2, 11);
     }
-
 
     /**
      * Polyfill for light dismissal via closedby="any"
@@ -169,9 +155,11 @@ export class DialogUtils extends HTMLElement {
     }
 
     enablePageScroll() {
-        if (this.origBodyOverflow) {
-            document.body.style.overflow = this.origBodyOverflow;
-            this.origBodyOverflow = null;
+        document.body.style.overflow = this.origBodyOverflow;
+
+        // tidy up if origBodyOverflow was an empty string and no other inline styles are active
+        if (document.body.getAttribute('style') === '') {
+            document.body.removeAttribute('style');
         }
     }
 
