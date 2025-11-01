@@ -28,6 +28,10 @@ export class DialogUtils extends HTMLElement {
         }
 
         this.dialog = this.querySelector('dialog');
+        if (!this.dialog) {
+            console.warn('DialogUtils: No <dialog> element found. Initialization aborted.');
+            return;
+        }
         this.dialog.id = this.dialog.id ?? this.generateUniqueId();
 
         this.dialog.addEventListener('toggle', this.onToggle.bind(this));
