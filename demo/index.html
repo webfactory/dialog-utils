@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo for &lt;dialog-utils&gt; Web Component</title>
+    <script src="../src/dialog-utils.js" defer="defer" type="module"></script>
+</head>
+<body>
+<main>
+    <h1>Demo for <code>&lt;dialog-utils&gt;</code> Web Component</h1>
+    <p>
+        <button onclick="document.getElementById('demo-1').show()">Open</button>
+        <button commandfor="demo-1" command="show-modal">Open as modal</button>
+    </p>
+
+    <dialog-utils>
+        <dialog id="demo-1" closedby="any">
+            <button commandfor="demo-1" command="close" autofocus="">Close</button>
+            <h1>I am a dialog.</h1>
+            <p>Here be dragons.</p>
+        </dialog>
+    </dialog-utils>
+</main>
+</body>
+</html>
