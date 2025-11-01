@@ -53,13 +53,14 @@ export class DialogUtils extends HTMLElement {
 
         if (isModal) {
             this.disablePageScroll();
-            this.dialog.dispatchEvent(new CustomEvent('show', {
-                detail: {
-                    isModal: isModal,
-                },
-                bubbles: true,
-            }));
         }
+
+        this.dialog.dispatchEvent(new CustomEvent('show', {
+            detail: {
+                isModal: isModal,
+            },
+            bubbles: true,
+        }));
     }
 
     onClose() {
