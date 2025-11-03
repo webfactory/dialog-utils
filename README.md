@@ -19,6 +19,8 @@ The enhancements are:
 3. `closedby="any"`: The Web Component polyfills the [declarative attribute for light dismissal](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy) of the dialog by a click outside of it.
 4. Playing media: If the dialog contains an iframe, the Web Component will ensure that any media stops playing when the dialog is closed.
 5. Focus behaviour: You should use the declarative `autofocus` attribute to indicate whether the dialog itself or a specific interactive child element should receive focus when the dialog is shown. If this is not an option, the Web Component accepts a `autofocus-target` attribute with a valid DOM selector string as its value. The WC will then try to set the `autofocus` attribute on the first element that matches the selector.
+6. Page scroll: If the dialog is opened as a modal, scrolling is disabled on the `<body>` and re-enabled on `close`.
+7. The Web Component emits a custom `show` event when the dialog is opened.
 
 ### Steps to implement:
 
@@ -26,7 +28,7 @@ The enhancements are:
 2. Wrap your  `<dialog>` with `<dialog-utils>`.
 3. Add a trigger and close `<button>` with your desired markup (e.g. nested icon, attributes, translated text, etc.). The buttons need to be made identifiable with `commandfor` and `command` as per the [specification](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element), if you want to benefit from the ease-of-use polyfills. The Web Component leaves positioning and aesthetics of the buttons to the outside context.
 
-### Example
+#### Basic example
 
 ```
 <button commandfor="my-dialog" command="show-modal">Open my dialog</button>
@@ -38,4 +40,32 @@ The enhancements are:
         <p>Some content</p>
     </dialog>
 </dialog-utils>
+```
+
+### Events
+
+#### `show`
+The component emits a `open` event on the `<dialog>` element that includes information about whether the dialog is displayed as a modal via `(bool) event.detail.isModal`.
+
+Caveat: This requires support for the `toggle` event which is [Baseline 2023](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent#browser_compatibility) but with a [known regression for dialog in Safari 18](https://bugs.webkit.org/show_bug.cgi?id=287055) (fixed in Safari 26).
+
+### Extending the component
+
+The component is exported to allow subclassing and extending its methods.
+
+#### Example
+
+```
+import {DialogUtils} from '@webfactoryde/dialog-utils';
+
+class MyCustomDialogUtils extends DialogUtils {
+    onOpen(event) {
+        // call the parent method
+        super.onOpen?.(event);
+
+        // do your custom thing
+    }
+}
+
+customElements.define('my-custom-dialog-utils', MyCustomDialogUtils);
 ```

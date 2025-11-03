@@ -1,4 +1,4 @@
-class DialogUtils extends HTMLElement {
+export class DialogUtils extends HTMLElement {
     static get observedAttributes() {
         return ["autofocus-target", "autoopen"];
     }
@@ -28,6 +28,13 @@ class DialogUtils extends HTMLElement {
         }
 
         this.dialog = this.querySelector('dialog');
+        if (!this.dialog) {
+            console.warn('DialogUtils: No <dialog> element found. Initialization aborted.');
+            return;
+        }
+        this.dialog.id = this.dialog.id ?? this.generateUniqueId();
+
+        this.dialog.addEventListener('toggle', this.onToggle.bind(this));
         this.dialog.addEventListener('close', this.onClose.bind(this));
 
         this.polyfillClosedByAny();
@@ -39,8 +46,38 @@ class DialogUtils extends HTMLElement {
         if (this._observer) this._observer.disconnect();
     }
 
+    onToggle(e) {
+        if (e.newState === 'open') {
+            this.onOpen();
+        }
+    }
+
+    onOpen() {
+        let isModal = document.querySelector(`#${this.dialog.id}:modal`) !== null;
+
+        if (isModal) {
+            this.disablePageScroll();
+        }
+
+        this.dialog.dispatchEvent(new CustomEvent('open', {
+            detail: {
+                isModal: isModal,
+            },
+            bubbles: true,
+        }));
+    }
+
     onClose() {
         this.resetIframes();
+        this.enablePageScroll();
+    }
+
+    generateUniqueId() {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            return crypto.randomUUID();
+        }
+
+        return Date.now() + '-' + Math.random().toString(36).substring(2, 11);
     }
 
     /**
@@ -120,6 +157,21 @@ class DialogUtils extends HTMLElement {
         if (openImmediately) {
             this.dialog.showModal();
         }
+    }
+
+    enablePageScroll() {
+        document.body.style.overflow = this.origBodyOverflow;
+
+        // tidy up if origBodyOverflow was an empty string and no other inline styles are active
+        if (document.body.getAttribute('style') === '') {
+            document.body.removeAttribute('style');
+        }
+    }
+
+    disablePageScroll() {
+        this.origBodyOverflow = document.body.style.overflow;
+
+        document.body.style.overflow = 'hidden';
     }
 
     /**

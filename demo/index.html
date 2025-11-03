@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo for &lt;dialog-utils&gt; Web Component</title>
+    <script src="../src/dialog-utils.js" defer="defer" type="module"></script>
+</head>
+<body>
+<main>
+    <h1>Demo for <code>&lt;dialog-utils&gt;</code> Web Component</h1>
+    <p>
+        <button id="open-nonmodal">Open</button>
+        <button commandfor="demo-1" command="show-modal">Open as modal</button>
+    </p>
+
+    <dialog-utils>
+        <dialog id="demo-1" closedby="any">
+            <button commandfor="demo-1" command="close" autofocus="">Close</button>
+            <h1>I am a dialog.</h1>
+            <p>Here be dragons.</p>
+        </dialog>
+    </dialog-utils>
+
+    <output></output>
+
+    <script>
+        let openButton = document.getElementById("open-nonmodal");
+        let dialog = document.getElementById('demo-1');
+
+        openButton.addEventListener("click", function() {
+            dialog.show();
+        })
+
+        dialog.addEventListener('show', (e) => {
+            document.querySelector("output").innerHTML = `Dialog is modal: ${e.detail.isModal}`;
+        })
+    </script>
+</main>
+</body>
+</html>
