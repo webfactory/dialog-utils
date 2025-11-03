@@ -5,6 +5,8 @@ export class DialogUtils extends HTMLElement {
 
     constructor() {
         super();
+        this._boundOnClose = this.onClose.bind(this);
+        this._boundOnToggle = this.onToggle.bind(this);
     }
 
     connectedCallback() {
@@ -12,8 +14,8 @@ export class DialogUtils extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.dialog.removeEventListener('toggle', this.onToggle);
-        this.dialog.removeEventListener('close', this.onClose);
+        this.dialog.removeEventListener('close', this._boundOnClose);
+        this.dialog.removeEventListener('toggle', this._boundOnToggle);
     }
 
     _connect() {
@@ -35,8 +37,8 @@ export class DialogUtils extends HTMLElement {
         this.dialog = this.querySelector('dialog');
         this.dialog.id = this.dialog.id ?? this.generateUniqueId();
 
-        this.dialog.addEventListener('toggle', this.onToggle);
-        this.dialog.addEventListener('close', this.onClose);
+        this.dialog.addEventListener('close', this._boundOnClose);
+        this.dialog.addEventListener('toggle', this._boundOnToggle);
 
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();
@@ -47,13 +49,13 @@ export class DialogUtils extends HTMLElement {
         if (this._observer) this._observer.disconnect();
     }
 
-    onToggle = (e) => {
+    onToggle(e) {
         if (e.newState === 'open') {
             this.onShow();
         }
     }
 
-    onShow = () => {
+    onShow() {
         let isModal = document.querySelector(`#${this.dialog.id}:modal`) !== null;
 
         if (isModal) {
@@ -68,7 +70,7 @@ export class DialogUtils extends HTMLElement {
         }));
     }
 
-    onClose = () => {
+    onClose() {
         this.resetIframes();
         this.enablePageScroll();
     }
