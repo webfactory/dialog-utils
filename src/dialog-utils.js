@@ -11,6 +11,11 @@ export class DialogUtils extends HTMLElement {
         this._connect();
     }
 
+    disconnectedCallback() {
+        this.dialog.removeEventListener('toggle', this.onToggle);
+        this.dialog.removeEventListener('close', this.onClose);
+    }
+
     _connect() {
         if (this.children.length) {
             this._init();
