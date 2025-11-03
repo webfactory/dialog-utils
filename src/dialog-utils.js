@@ -5,10 +5,17 @@ export class DialogUtils extends HTMLElement {
 
     constructor() {
         super();
+        this._boundOnClose = this.onClose.bind(this);
+        this._boundOnToggle = this.onToggle.bind(this);
     }
 
     connectedCallback() {
         this._connect();
+    }
+
+    disconnectedCallback() {
+        this.dialog.removeEventListener('close', this._boundOnClose);
+        this.dialog.removeEventListener('toggle', this._boundOnToggle);
     }
 
     _connect() {
@@ -34,8 +41,8 @@ export class DialogUtils extends HTMLElement {
         }
         this.dialog.id = this.dialog.id ?? this.generateUniqueId();
 
-        this.dialog.addEventListener('toggle', this.onToggle.bind(this));
-        this.dialog.addEventListener('close', this.onClose.bind(this));
+        this.dialog.addEventListener('close', this._boundOnClose);
+        this.dialog.addEventListener('toggle', this._boundOnToggle);
 
         this.polyfillClosedByAny();
         this.polyfillInvokerCommands();

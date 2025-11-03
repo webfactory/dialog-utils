@@ -20,7 +20,7 @@ The enhancements are:
 4. Playing media: If the dialog contains an iframe, the Web Component will ensure that any media stops playing when the dialog is closed.
 5. Focus behaviour: You should use the declarative `autofocus` attribute to indicate whether the dialog itself or a specific interactive child element should receive focus when the dialog is shown. If this is not an option, the Web Component accepts a `autofocus-target` attribute with a valid DOM selector string as its value. The WC will then try to set the `autofocus` attribute on the first element that matches the selector.
 6. Page scroll: If the dialog is opened as a modal, scrolling is disabled on the `<body>` and re-enabled on `close`.
-7. The Web Component emits a custom `show` event when the dialog is opened.
+7. The Web Component emits a custom `open` event when the dialog is opened.
 
 ### Steps to implement:
 
@@ -44,7 +44,7 @@ The enhancements are:
 
 ### Events
 
-#### `show`
+#### `open`
 The component emits a `open` event on the `<dialog>` element that includes information about whether the dialog is displayed as a modal via `(bool) event.detail.isModal`.
 
 Caveat: This requires support for the `toggle` event which is [Baseline 2023](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent#browser_compatibility) but with a [known regression for dialog in Safari 18](https://bugs.webkit.org/show_bug.cgi?id=287055) (fixed in Safari 26).
