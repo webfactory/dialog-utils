@@ -48,18 +48,18 @@ export class DialogUtils extends HTMLElement {
 
     onToggle(e) {
         if (e.newState === 'open') {
-            this.onShow();
+            this.onOpen();
         }
     }
 
-    onShow() {
+    onOpen() {
         let isModal = document.querySelector(`#${this.dialog.id}:modal`) !== null;
 
         if (isModal) {
             this.disablePageScroll();
         }
 
-        this.dialog.dispatchEvent(new CustomEvent('show', {
+        this.dialog.dispatchEvent(new CustomEvent('open', {
             detail: {
                 isModal: isModal,
             },

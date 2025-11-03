@@ -45,7 +45,7 @@ The enhancements are:
 ### Events
 
 #### `show`
-The component emits a `show` event on the `<dialog>` element that includes information about whether the dialog is displayed as a modal via `(bool) event.detail.isModal`.
+The component emits a `open` event on the `<dialog>` element that includes information about whether the dialog is displayed as a modal via `(bool) event.detail.isModal`.
 
 Caveat: This requires support for the `toggle` event which is [Baseline 2023](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent#browser_compatibility) but with a [known regression for dialog in Safari 18](https://bugs.webkit.org/show_bug.cgi?id=287055) (fixed in Safari 26).
 
@@ -59,9 +59,9 @@ The component is exported to allow subclassing and extending its methods.
 import {DialogUtils} from '@webfactoryde/dialog-utils';
 
 class MyCustomDialogUtils extends DialogUtils {
-    onShow(event) {
+    onOpen(event) {
         // call the parent method
-        super.onShow?.(event);
+        super.onOpen?.(event);
 
         // do your custom thing
     }
