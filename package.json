@@ -1,6 +1,6 @@
 {
   "name": "@webfactoryde/dialog-utils",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Web Component with progressive enhancements for the HTML <dialog> element",
   "main": "src/dialog-utils.js",
   "repository": {
