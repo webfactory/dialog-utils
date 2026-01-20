@@ -207,13 +207,14 @@ export class DialogUtils extends HTMLElement {
             if (src) {
                 // Remove src to interrupt media playing
                 iframe.removeAttribute('src');
-                // Restore the src so iframe is available if the dialog is reopened
-                iframe.src = src;
 
                 if (loading) {
                     // Restore loading
                     iframe.setAttribute('loading', loading);
                 }
+
+                // Restore the src so iframe is available if the dialog is reopened
+                iframe.src = src;
             }
         });
     }
