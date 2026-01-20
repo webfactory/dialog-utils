@@ -183,6 +183,13 @@ export class DialogUtils extends HTMLElement {
 
     /**
      * Ensure that any interactive iframe content (i.e. embedded video) stops playing when the dialog is closed
+     *
+     * There is a discrepancy in Browser behaviour if `loading="lazy"` is used:
+     * - Firefox only stops playing if iframe.src is reset ONCE (but NOT if it is first removed or set to empty string
+     *      and THEN reset to the correct source)
+     * - Chromium Browsers only stop playing the iframe.src is first removed and THEN reset to the correct source
+     *
+     * This is why resetIframes() first removes `loading` before touching `src` and then restoring `loading`.
      */
     resetIframes() {
         let iframes = this.dialog.querySelectorAll('iframe');
@@ -190,17 +197,24 @@ export class DialogUtils extends HTMLElement {
         if (!iframes) return; // exit early
 
         iframes.forEach(iframe => {
-            // In case of legacy lazyloading techniques prior to loading="lazy",
-            // the src attribute may be empty, but a data-src should be present.
-            let originalSrc = iframe.dataset.src ?? iframe.src;
+            let src = iframe.src;
+            let loading = iframe.loading;
 
-            // Reset the src to stop any media playing
-            iframe.src = '';
+            if (src && loading) {
+                iframe.removeAttribute('loading');
+            }
 
-            // Restore the src so iframe is available if the dialog is reopened
-            setTimeout(() => {
-                iframe.src = originalSrc;
-            }, 100);
+            if (src) {
+                // Remove src to interrupt media playing
+                iframe.removeAttribute('src');
+                // Restore the src so iframe is available if the dialog is reopened
+                iframe.src = src;
+
+                if (loading) {
+                    // Restore loading
+                    iframe.setAttribute('loading', loading);
+                }
+            }
         });
     }
 }
