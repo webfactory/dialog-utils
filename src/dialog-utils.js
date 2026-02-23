@@ -220,4 +220,6 @@ export class DialogUtils extends HTMLElement {
     }
 }
 
-customElements.define('dialog-utils', DialogUtils);
+if (!customElements.get('dialog-utils')) {
+    customElements.define('dialog-utils', DialogUtils);
+}
